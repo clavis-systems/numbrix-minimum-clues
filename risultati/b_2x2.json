@@ -1,0 +1,16 @@
+{
+  "m": 2,
+  "n": 2,
+  "soluzioni": 8,
+  "definenti_1": 0,
+  "definenti_2": 32,
+  "definenti_3": 32,
+  "esempi_3": [
+    {"indizi": [[0, 1], [1, 2], [3, 3]], "soluzione": [1, 2, 4, 3]},
+    {"indizi": [[0, 1], [1, 2], [2, 4]], "soluzione": [1, 2, 4, 3]},
+    {"indizi": [[0, 1], [2, 2], [3, 3]], "soluzione": [1, 4, 2, 3]},
+    {"indizi": [[0, 1], [2, 2], [1, 4]], "soluzione": [1, 4, 2, 3]},
+    {"indizi": [[1, 1], [0, 2], [2, 3]], "soluzione": [2, 1, 3, 4]}
+  ],
+  "secondi": 0.718
+}

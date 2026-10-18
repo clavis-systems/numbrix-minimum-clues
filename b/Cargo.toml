@@ -1,0 +1,12 @@
+[package]
+name = "numbrix_b"
+version = "0.1.0"
+edition = "2021"
+description = "Programma B (Numbrix): conteggio indipendente degli insiemi di indizi definenti"
+
+[dependencies]
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = true
