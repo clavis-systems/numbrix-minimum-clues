@@ -17,9 +17,10 @@ checked the small cases by computer.
 - **5×6 (5 rows, 6 columns): the minimum is 2, not 3.** There are 40 defining pairs. This goes against conjecture
   (i) for n = 6.
 - **The other cases agree with the conjectures:** 5×5, 5×7, 5×8, 6×6, 6×7 and 6×8 have minimum 3.
-- **8×8:** not computed yet.
+- **8×8: the minimum is also 3** (16,448 sets of 3 clues, none of 2), one fewer than the ⌈8/2⌉ = 4 clues of the
+  Hanson–Nash bound.
 
-**Minimum number of clues for an n×n board, n = 1…7:** 0, 2, 2, 2, 3, 3, 3.
+**Minimum number of clues for an n×n board, n = 1…8:** 0, 2, 2, 2, 3, 3, 3, 3.
 
 The counts of defining sets count a puzzle, its rotations and reflections, and its reversal (k → m·n+1−k)
 separately.
@@ -57,6 +58,21 @@ All 40 defining pairs of 5×6 use the two middle cells of the top row or of the 
 keep the two clues in the same places (top row, third and fourth cells) on a board with 6 rows and 5 columns, there
 are 8 solutions.
 
+### A 3-clue 8×8 puzzle
+
+All three clues are in the top row.
+
+```
+ 9  . 23  . 51  .  .  .           9 10 23 24 51 52 53 54
+ .  .  .  .  .  .  .  .           8 11 22 25 50 49 48 55
+ .  .  .  .  .  .  .  .           7 12 21 26 27 28 47 56
+ .  .  .  .  .  .  .  .    ->     6 13 20 19 18 29 46 57
+ .  .  .  .  .  .  .  .           5 14 15 16 17 30 45 58
+ .  .  .  .  .  .  .  .           4 35 34 33 32 31 44 59
+ .  .  .  .  .  .  .  .           3 36 37 40 41 42 43 60
+ .  .  .  .  .  .  .  .           2  1 38 39 64 63 62 61
+```
+
 ## All the numbers
 
 "Defining sets of 3" counts every 3-clue set with a unique solution, also those that already contain a defining
@@ -80,6 +96,7 @@ pair. This only matters where defining pairs exist.
 | 6×8 | 24,142,924 | 0 | 0 | 478,432 | 3 |
 | 7×7 | 27,070,560 | 0 | 0 | **54,608** | **3** |
 | 7×8 | 351,810,620 | 0 | 0 | 100,104 | 3 |
+| 8×8 | 6,046,626,568 | 0 | 0 | 16,448 | 3 |
 
 The numbers of solutions match OEIS [A096969](https://oeis.org/A096969) for the square boards. For the rectangles
 they match [A366399](https://oeis.org/A366399) after doubling: A366399 is a triangle T(n,k) with k ≤ n that counts
@@ -110,10 +127,15 @@ What agrees with what:
   - the "no 2-clue set" result is checked by A, D and the reviewer;
   - the count 100,104 comes from A only. Some of its examples (in the `a_7x8_gruppo_*` files) were checked with C and
     numpy.
+- **8×8:**
+  - the "no 2-clue set" result is checked by A and D;
+  - the count 16,448 comes from A only. Its 5 examples (in `a_8x8_simmetrie.json`) were checked with C;
+  - the reviewer did not check 8×8.
 - **Small boards:** A, B and D agree with the brute force in `python/` (for example on 4×4 and 4×5).
 
-Not every check left a file: the outputs of A, B and D are in `risultati/`, and so is the reviewer's list of the
-7×7 defining sets of 3. The other reviewer runs, the brute force runs and the numpy checks are only in my notes.
+Not every check left a file: the outputs of A, B and D are in `risultati/`, and so are the reviewer's list of the
+7×7 defining sets of 3 and C's check of the 8×8 examples. The other reviewer runs, the brute force runs and the
+numpy checks are only in my notes.
 
 ### The files in `risultati/`
 
@@ -121,6 +143,8 @@ Not every check left a file: the outputs of A, B and D are in `risultati/`, and 
   program A run with the symmetries of the board.
 - `a_7x7_gruppo_C_V.json` and `a_7x8_gruppo_C_V.json`: program A run only on the sets that contain the clue C:V,
   with examples. For instance, `a_7x7_gruppo_24_1.json` gives the 80 sets with 1 in the centre.
+- `c_8x8_esempi.txt` ("8×8 examples"): program C run on the 5 example puzzles of `a_8x8_simmetrie.json`, one line
+  per puzzle ("soluzioni_fino_a_2" = solutions, counting up to 2; "soluzione_valida" = the solution is valid).
 - The keys are in Italian:
   - "soluzioni" = solutions;
   - "definenti_1/2/3" = defining sets of 1/2/3 clues;
@@ -145,6 +169,7 @@ cargo run --release -- conta 7 7                 # 27070560 solutions, about 5 s
 cargo run --release -- definenti 7 7 simmetrie   # 0, 0, 54608 defining sets of 1, 2, 3 clues, about 1 min
 cargo run --release -- definenti 5 6             # 40 defining pairs, under 1 s
 cargo run --release -- gruppo 7 7 24 1           # 80 defining sets of 3 with the clue 24:1
+cargo run --release -- definenti 8 8 simmetrie   # 0, 0, 16448 defining sets of 1, 2, 3 clues, about 3 hours
 cd ..
 python c/risolutore_c.py 7 7 24:1 1:6 14:31      # exactly 1 solution
 cd b
@@ -167,11 +192,12 @@ Notes on the separate agents' programs:
 ## Limits
 
 - These are computer results. For 7×7 they come from several independent programs.
-- The 3-clue counts for 5×7, 5×8, 6×7, 6×8 and 7×8 come from program A only.
+- The 3-clue counts for 5×7, 5×8, 6×7, 6×8, 7×8 and 8×8 come from program A only.
   - For 5×7, 5×8, 6×7 and 6×8 the minimum 3 does not depend on them: Hanson and Nash proved that 3 clues are enough
     there, and A and D find no defining pair.
-  - For 7×8 the minimum 3 rests on A's examples, which were checked separately.
-- I checked boards up to 7×8. I do not know yet what happens on larger boards.
+  - For 7×8 and 8×8 the minimum 3 rests on two parts: A and D find no defining pair, and A's examples of defining
+    sets of 3 were checked separately with C.
+- I checked the boards in the table above (up to 8×8). I do not know yet what happens on larger boards.
 
 ## How this was made
 
